@@ -1,0 +1,3 @@
+ansible myhosts -m command -a "mkdir -p /home/mydir /home/mydir1" -k -K -b
+ansible myhosts -m command -a "mkdir -p /home/mydir /home/mydir1" -k -K -b -e "ansible_user=madhu"
+

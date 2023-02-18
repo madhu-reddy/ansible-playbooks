@@ -1,0 +1,10 @@
+---
+- hosts: myhosts
+  tasks:
+  - name: print OS version
+    command: cat /etc/issue
+    register: hostsnames
+  - debug:
+      msg: the OS version is {{ hostsnames.stdout.split()[0] }} {{ hostsnames.stdout.split()[1] }}
+  - debug:
+      msg: the full OS version output is {{ hostsnames.stdout }}
