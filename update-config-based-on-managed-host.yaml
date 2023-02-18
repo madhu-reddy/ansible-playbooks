@@ -1,0 +1,29 @@
+---
+  - name: update a config file
+    hosts: myhosts
+    gather_facts: true
+    tasks:
+#    - debug:
+ #       msg: "{{ ansible_facts }}"
+    - name: copy .env files
+      copy:
+        src: myenv
+        dest: /home/madhuapps/madhudir/.env
+      when: ansible_facts['nodename'] == "madhu-test-1"
+    - debug:
+        var:  ansible_facts['default_ipv4']['address'] 
+
+
+    - set_fact:
+        cluster_member: 192.168.125.129
+      when: ansible_facts['nodename'] != "madhu-test-2"
+
+    - set_fact:
+        cluster_member: 192.168.125.130
+      when: ansible_facts['nodename'] != "madhu-test-3"
+
+    - name: copy .env files
+      template:
+        src: env_other.j2
+        dest: /home/madhuapps/madhudir/.env
+      when: ansible_facts['nodename'] != "madhu-test-1"
