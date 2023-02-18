@@ -1,0 +1,65 @@
+---
+- name: docker and docker-compose
+  hosts: myhosts
+  vars_prompt:
+    - name: dockerhub
+      prompt: enter dockerhub password?
+  tasks:
+  - name: install dependency
+    apt:
+      name: "{{item}}"
+      state: present
+      update_cache: yes
+    loop:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+
+  - name: add GPG key
+    apt_key:
+      url: "{{item}}"
+      state: present
+    loop:
+      - 'https://download.docker.com/linux/ubuntu/gpg'
+
+
+  - name: add docker repository to apt
+    apt_repository:
+      #repo: "deb https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"   # WRONG
+      repo: "deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable" 
+      state: present
+
+  - name: install docker
+    apt:
+      name: "{{item}}"
+      state: latest
+    register: install_docker
+    loop:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+
+
+
+  - name: Check if docker-compose is installed
+    stat:
+      path: /usr/local/bin/docker-compose 
+    register: docker_compose_package
+
+
+  - name: Install docker-compose
+    vars:
+      compose_version: 1.29.2
+    get_url:
+      url: https://github.com/docker/compose/releases/download/{{ compose_version }}/docker-compose-Linux-x86_64
+      dest: /usr/local/bin/docker-compose
+      mode: 'u+x,g+x'
+    when: docker_compose_package.stat.exists == false
+
+
+  - name: docker login
+    docker_login:
+      username: madhukunta
+      password: "{{ dockerhub }}"
