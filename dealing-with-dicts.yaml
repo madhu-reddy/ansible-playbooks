@@ -1,0 +1,28 @@
+---
+ - name: dealing with dicts
+   hosts: localhost
+   vars:
+     users:
+       madhu:
+         age: 35
+         weight: 170
+       ramu:
+         age: 45
+         weight: 190
+
+   tasks:
+     - debug:
+         msg: "{{ users }}"
+
+     - name: print age of user madhu
+       debug:
+         msg: "age of user madhu is {{ users['madhu']['age'] }}"
+
+     - name: print all users age
+       debug:
+         msg: "age of the user {{ item.key }} is {{ item.value['age'] }}"
+       loop: "{{ users | dict2items}}"
+
+
+# "dict2items" convert the dictionary to list in the below format.
+# (item={'key': 'madhu', 'value': {'age': 35, 'weight': 170}} 

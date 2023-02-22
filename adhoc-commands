@@ -1,3 +1,4 @@
 ansible myhosts -m command -a "mkdir -p /home/mydir /home/mydir1" -k -K -b
 ansible myhosts -m command -a "mkdir -p /home/mydir /home/mydir1" -k -K -b -e "ansible_user=madhu"
-
+ansible myhosts -m copy -a "src=/tmp/ dest=/home/madhu/test remote_src=true" -k -K -b  # copy files from /tmp/* to "/home/madhu/test" from inside the managed host itself (both src and dest in the managed host)
+ansible myhosts -m copy -a "src=/tmp/ dest=/home/madhu/test" -k -K -b  # copy files from /tmp/* to /home/madhu/test, where src in on the controller host and dest on the managed host.
