@@ -1,0 +1,37 @@
+---
+ - name: remove multiline from a file
+   hosts: myhosts
+   tasks:
+   - name: play to remove multiline
+     replace:
+       path: /home/madhu/keepalived/keepalived.conf
+       before: 'vrrp_instance'
+       after: '}'
+       regexp: '\w+\D+'    # This will match complete text (digit and non digits) in the file
+
+
+
+
+# To remove the 4 lines of code, starting from "vrrp_script"
+
+#cat /home/madhu/keepalived/keepalived.conf
+#####################################################################
+global_defs {
+default_interface {{ KEEPALIVED_INTERFACE }}
+}
+
+vrrp_script chk_haproxy { # Requires keepalived-1.1.13
+script "/home/madhu/galera/node-1/keepalived/check_galera_haproxy.sh" 
+interval 2 # check every 2 seconds
+weight -60 # add 2 points of prio if OK
+}
+
+vrrp_instance VI_1 {
+interface {{ KEEPALIVED_INTERFACE }}
+####################################################################
+
+
+
+
+# Unable to do the same with "blockinfile" as it will be checking for the "marker" entry to identify the block which need to be deleted/removed.
+
