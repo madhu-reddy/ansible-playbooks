@@ -1,0 +1,2 @@
+ansible-inventory --list -i vmware_vm_inventory.vmware.yaml
+ansible-inventory --list -i vmware_host_inventory.vmware.yaml
