@@ -1,0 +1,24 @@
+---
+- name: disk details
+  hosts: localhost
+  tasks:
+    - name: Gather disk info from virtual machine using name
+      vmware_guest_disk_info:
+        hostname: 192.168.125.32
+        username: root
+        password: pass
+        name: ubuntu20
+        datacenter: ""
+        validate_certs: False 
+      delegate_to: localhost
+      register: disk_info
+
+    - debug:
+        msg: "{{ disk_info }}"
+
+    - debug:
+        msg: "Datastore: {{ item.value['backing_datastore'] }} |  Capacity (GB): {{ (item.value['capacity_in_bytes']/1000000000) |round(2) }}  | ControllerType: {{ item.value['controller_type'] }}  | label: {{ item.value['label'] }}  | unit_number: {{ item.value['unit_number'] }} |  is_thin_provisioned: {{ item.value['backing_thinprovisioned'] }} | scsi_controller_id: {{ item.value['controller_bus_number'] }}"
+      loop: "{{ disk_info['guest_disk_info'] | dict2items }}"
+      loop_control:
+        label: "{{ item.key }}"
+

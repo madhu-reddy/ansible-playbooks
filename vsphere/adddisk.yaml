@@ -1,0 +1,22 @@
+---
+- name: disk details
+  hosts: localhost
+  tasks:
+    - name: Gather disk info from virtual machine using name
+      vmware_guest_disk:
+        hostname: 192.168.125.32
+        username: root
+        password: pass
+        name: ubuntu20
+        datacenter: "ha-datacenter"
+        validate_certs: False 
+        disk:
+          - size_mb: 500
+            type: thin
+            datastore: datastore1
+            disk_mode: persistent
+            state: present
+            scsi_controller: 0
+            unit_number: 3
+            scsi_type: 'lsilogic'
+
